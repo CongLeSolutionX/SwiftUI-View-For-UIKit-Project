@@ -47,6 +47,8 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     view.backgroundColor = .red
+    navigationItem.title = "UIViewController Title"
+    navigationItem.largeTitleDisplayMode = .always
     
     // Button to present the SwiftUI view
     view.addSubview(buttonToPresentSwiftUIView)
