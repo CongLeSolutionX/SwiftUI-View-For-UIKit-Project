@@ -13,7 +13,7 @@ References:
 <img src="" width="300" height="600"/>
 </p>
 
-#Table of contents
+# Table of contents
 * UIHostingController 
 * Bridging data 
 * SwiftUI in cells 
@@ -29,7 +29,7 @@ References:
 <img src="./Images/UIHostingController.png" width="600" height="600"/>
 </p>
 
-- How to use UIHostingController:
+### How to use UIHostingController
 
 a. Presenting a UIHostingController as a modal view controller:
 
@@ -123,5 +123,5 @@ if #available(iOS 13.0, *) {
 }
 ```
 
-##Bridging Data from App to SwiftUI
+## Bridging Data from App to SwiftUI
 
