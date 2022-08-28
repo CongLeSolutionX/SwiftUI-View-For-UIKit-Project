@@ -81,6 +81,10 @@ extension ViewController {
     @objc func presentSwiftUIView() {
         let swiftUIView = SwiftUIView()
         let hostingController = UIHostingController(rootView: swiftUIView)
+  
+        hostingController.modalTransitionStyle = .crossDissolve
+        hostingController.modalPresentationStyle = .popover
+        
         // Present the hosting controller modally
         present(hostingController, animated: true, completion: nil)
     }
@@ -89,8 +93,7 @@ extension ViewController {
     @objc func addSwiftUIView() {
         let swiftUIView = SwiftUIView()
         let hostingController = UIHostingController(rootView: swiftUIView)
-        
-        hostingController.modalTransitionStyle = .crossDissolve
+    
         navigationController?.pushViewController(hostingController, animated: true)
     }
     
