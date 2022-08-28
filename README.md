@@ -1,18 +1,25 @@
-# Add SwiftUI View For UIKit Project
-A sample project demonstrate 3 methods to present a SwiftUI View on an existing UIKit project using UIViewControllers 
+# Use SwiftUI With UIKit - WWDC22
+In this demo project we will: 
+- Demonstrate 3 methods to present a SwiftUI View on an existing UIKit project using UIViewControllers.
+- How to bridge data between the legacy app and SwiftUI back and forth. 
+- How to embed SwiftUI into UICollectionView and UITableView with UIHostingConfiguration.
+
+References: 
+- WWDC 2022 video: https://developer.apple.com/videos/play/wwdc2022/10072
+- An article on www.avanderlee.com: https://www.avanderlee.com/swiftui/integrating-swiftui-with-uikit
 
 ## Video Demo
 <p align="center">
-<img src="https://user-images.githubusercontent.com/31250006/130022854-48e401c3-3ecb-471c-9286-c96b97d5977e.gif" width="300" height="600"/>
+<img src="" width="300" height="600"/>
 </p>
 
-#Using SwiftUI with UIKit
+#Table of contents
 * UIHostingController 
 * Bridging data 
 * SwiftUI in cells 
 * Data flow for cells
 
-### UIHostingController
+## UIHostingController
 
 - UIHostingController is a UIViewController that contains a SwiftUI view hierarchy. 
 - We can use a hosting controller anywhere we can use a view controller in UIKit.
@@ -41,7 +48,7 @@ For **modalTransitionsStyle**, we have options like `flipHorizontal`, `coverVert
 
 For **modalPresentationStyle**, we have options like `fullScreen`, `formSheet`, `popover`, `automatic`, `currentContext`, `custom`, `overCurrentContext`, `overFullScreen`, `pageSheet`, and `none`
 
-**modalTransitionStyle** option as `partialCurl`must go with **modalPresentationStyle** as `.fullScreen` to demo the effect. Otherwise, we will receive an error similar to the following one from compiler:
+**modalTransitionStyle** option as `partialCurl`must go with **modalPresentationStyle** as `.fullScreen` to demo the effect. Otherwise, we will receive an error similar to the following one from the compiler:
 
 `Thread 1: "Application tried to present UIModalTransitionStylePartialCurl to or from non-fullscreen view controller <SwiftUIViewForUIKitProject.ViewController: 0x7fb429008eb0>."`
 
@@ -83,8 +90,38 @@ self.addSubSwiftUIView(swiftUIVIew, to: view)
 ```
 
 
-- When the SwiftUI content inside UIHostingController changes, it may cause the view to need to be resized.
+- When the SwiftUI content inside UIHostingController changes, it may cause the view to need to be resized. In iOS 16.0, the UIHostingController enables automatic updates of the view controller's preferred content size and the view's intrinsic content size.
 
+<p align="center">
+<img src="./Images/SizingOptions.png" width="500" height="400"/>
+</p>
 
+We can enable this automatic update via using the new [**sizingOptions** property](https://developer.apple.com/documentation/swiftui/nshostingcontroller/sizingoptions) on UIHostingController.
 
+```swift
+let swiftUIView = SwiftUIView()
+let hostingController = UIHostingController(rootView: swiftUIView)
+
+hostingController.modalTransitionStyle = .crossDissolve
+hostingController.modalPresentationStyle = .popover
+
+/// Since `sizingOptions` API only available from iOS 16.0, we need a version check here 
+if #available(iOS 16.0, *) {
+	hostingController.sizingOptions = .preferredContentSize
+} else {
+	// Fallback on earlier versions
+}
+present(hostingController, animated: true, completion: nil)
+```
+Since SwiftUI is available from iOS 13.0 and if your app still supports older iOS versions, we should have a version check when adding the SwiftUI features into the codebase.
+
+```swift
+if #available(iOS 13.0, *) {
+    presentSwiftUIView()
+} else {
+    // Fallback on earlier versions
+}
+```
+
+##Bridging Data from App to SwiftUI
 

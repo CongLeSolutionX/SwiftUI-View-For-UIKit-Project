@@ -85,6 +85,11 @@ extension ViewController {
         hostingController.modalTransitionStyle = .crossDissolve
         hostingController.modalPresentationStyle = .popover
         
+        if #available(iOS 16.0, *) {
+            hostingController.sizingOptions = .preferredContentSize
+        } else {
+            // Fallback on earlier versions
+        }
         // Present the hosting controller modally
         present(hostingController, animated: true, completion: nil)
     }
