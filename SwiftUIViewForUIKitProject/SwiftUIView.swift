@@ -16,10 +16,10 @@ struct SwiftUIView: View {
         .toolbar {
           ToolbarItem(placement: .principal) {
             VStack {
-              Text("Navigation Title")
+              Text("SwiftUI Navigation Title")
                 .font(.system(.headline))
               
-              Text("Navigation subtitle")
+              Text("SwiftUI Navigation subtitle")
                 .font(.system(.subheadline))
             }
           }

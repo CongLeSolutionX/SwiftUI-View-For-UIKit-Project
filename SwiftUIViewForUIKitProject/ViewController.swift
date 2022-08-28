@@ -49,7 +49,7 @@ class ViewController: UIViewController {
         view.backgroundColor = .red
         navigationItem.title = "UIViewController Title"
         navigationItem.largeTitleDisplayMode = .always
-        
+        navigationController?.navigationBar.backgroundColor = .green
         // Button to present the SwiftUI view
         view.addSubview(buttonToPresentSwiftUIView)
         
