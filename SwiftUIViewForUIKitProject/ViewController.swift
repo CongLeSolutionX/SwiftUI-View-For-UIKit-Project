@@ -10,7 +10,20 @@ import UIKit
 import SwiftUI /// contains instance `UIHostingController`
 
 class ViewController: UIViewController {
-    
+    lazy var stackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [
+            buttonToPresentSwiftUIView,
+            buttonToAddSwiftUIViewToUIKitView,
+            buttonToAddSwiftUIViewToUIKitViewThroughExtension
+        ])
+        stackView.axis = .vertical
+        stackView.distribution = .fillEqually
+        stackView.spacing = 20
+        stackView.alignment = .center
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+   
     lazy var buttonToPresentSwiftUIView: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = .yellow
@@ -32,7 +45,7 @@ class ViewController: UIViewController {
         button.addTarget(self, action: #selector(addSwiftUIView), for: .touchUpInside)
         return button
     }()
-    
+   
     lazy var buttonToAddSwiftUIViewToUIKitViewThroughExtension: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = .yellow
@@ -46,30 +59,21 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
-        navigationItem.title = "UIViewController Title"
-        navigationItem.largeTitleDisplayMode = .always
-        navigationController?.navigationBar.backgroundColor = .green
-        // Button to present the SwiftUI view
-        view.addSubview(buttonToPresentSwiftUIView)
+        self.view.backgroundColor = .red
+        self.view.addSubview(stackView)
         
-        // Button to add SwiftUI View
-        view.addSubview(buttonToAddSwiftUIViewToUIKitView)
-        
-        // Button to add SwiftUI view from extension of UIViewController
-        view.addSubview(buttonToAddSwiftUIViewToUIKitViewThroughExtension)
-        
+        // Set up navigation controller
+        self.navigationItem.title = "UIViewController Title"
+        self.navigationItem.largeTitleDisplayMode = .always
+        self.navigationController?.navigationBar.backgroundColor = .green
+
         setupConstraints()
     }
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            buttonToPresentSwiftUIView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            buttonToPresentSwiftUIView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            buttonToAddSwiftUIViewToUIKitView.topAnchor.constraint(equalTo: buttonToPresentSwiftUIView.bottomAnchor, constant: 20),
-            buttonToAddSwiftUIViewToUIKitView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            buttonToAddSwiftUIViewToUIKitViewThroughExtension.topAnchor.constraint(equalTo: buttonToAddSwiftUIViewToUIKitView.bottomAnchor, constant: 20),
-            buttonToAddSwiftUIViewToUIKitViewThroughExtension.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            stackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
         ])
     }
 }
@@ -81,7 +85,7 @@ extension ViewController {
     @objc func presentSwiftUIView() {
         let swiftUIView = SwiftUIView()
         let hostingController = UIHostingController(rootView: swiftUIView)
-  
+        
         hostingController.modalTransitionStyle = .crossDissolve
         hostingController.modalPresentationStyle = .popover
         
@@ -98,7 +102,7 @@ extension ViewController {
     @objc func addSwiftUIView() {
         let swiftUIView = SwiftUIView()
         let hostingController = UIHostingController(rootView: swiftUIView)
-    
+        
         navigationController?.pushViewController(hostingController, animated: true)
     }
     
