@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Passing data to SwiftUI with manual UIHostingController updates
 struct ManualBridgingDataSwiftUIView: View {
     var beatPerMinutes: Int
     
