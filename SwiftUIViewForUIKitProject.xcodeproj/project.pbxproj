@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C55DCF328BC04DD001364EA /* BridgingDataSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C55DCF228BC04DD001364EA /* BridgingDataSwiftUIView.swift */; };
 		4C82746F26CDBEA6009C786F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C82746E26CDBEA6009C786F /* AppDelegate.swift */; };
 		4C82747326CDBEA6009C786F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C82747226CDBEA6009C786F /* ViewController.swift */; };
 		4C82747826CDBEAA009C786F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C82747726CDBEAA009C786F /* Assets.xcassets */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4C55DCF228BC04DD001364EA /* BridgingDataSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgingDataSwiftUIView.swift; sourceTree = "<group>"; };
 		4C82746B26CDBEA6009C786F /* SwiftUIViewForUIKitProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIViewForUIKitProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C82746E26CDBEA6009C786F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4C82747226CDBEA6009C786F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -57,6 +59,7 @@
 				4C82746E26CDBEA6009C786F /* AppDelegate.swift */,
 				4C82747226CDBEA6009C786F /* ViewController.swift */,
 				4C82748226CDBFF3009C786F /* SwiftUIView.swift */,
+				4C55DCF228BC04DD001364EA /* BridgingDataSwiftUIView.swift */,
 				4C82747726CDBEAA009C786F /* Assets.xcassets */,
 				4C82747926CDBEAA009C786F /* LaunchScreen.storyboard */,
 				4C82747C26CDBEAA009C786F /* Info.plist */,
@@ -135,6 +138,7 @@
 			files = (
 				4C82747326CDBEA6009C786F /* ViewController.swift in Sources */,
 				4C82746F26CDBEA6009C786F /* AppDelegate.swift in Sources */,
+				4C55DCF328BC04DD001364EA /* BridgingDataSwiftUIView.swift in Sources */,
 				4C82748326CDBFF3009C786F /* SwiftUIView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

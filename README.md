@@ -14,7 +14,7 @@ References:
 </p>
 
 # Table of contents
-* UIHostingController 
+* UIHostingController
 * Bridging data 
 * SwiftUI in cells 
 * Data flow for cells
@@ -124,4 +124,116 @@ if #available(iOS 13.0, *) {
 ```
 
 ## Bridging Data from App to SwiftUI
+
+Data in SwiftUI views 
+
+| Data owned <br/> by SwiftUI view | External data   |  External reference <br/> with change traking   |
+| -------------------------------- | --------------  | ----------------------------------------------- |
+| @State      						  | Passed arguments| @ObservableObject                               |
+| @StateObject      				  |                 | @EnvironmentObject                              |
+
+
+To update the views hosted inside UIHostingController, we have the following methods: 
+a. Manually passing an argument in the UIHostingController
+b. Using `ObservableObject` to pass data from SwiftUI to UIKit view
+
+- Create a data class called `ContentViewData` and conform to `ObservableObject`, then create a variable called `name` and mark it as a `@Published` Property Wrapper.
+
+```swift
+class ContentViewData: ObservableObject {
+    @Published var name: String = ""
+}
+```
+
+- Create a new SwiftUI view, then create a property called `data` and mark it as `@ObservedObject` Property Wrapper. We will bind the `data` and `name` as in `self.$data.name`. At this point, whenever the user types in some text in `TextField()`, the text field will reflect the changes
+
+```swift
+struct BridgingDataSwiftUIView: View {
+	@ObservedObject var data: ContentViewData
+    
+    var body: some View {
+        VStack {
+            TextField("Enter name", text: self.$data.name)
+        }.background(Color.green)
+    }
+}
+
+struct BridgingDataSwiftUIView_Previews: PreviewProvider {
+    static var previews: some View {
+        BridgingDataSwiftUIView(data: ContentViewData())
+    }
+}
+```
+- Back to the UIKit view, we will set up to receive data streams from the SwiftUI view:
+	a. Create a UILabel on the UIKit view and add it to the stack view.
+	
+	```swift
+private lazy var inputReceivedFromSwifUIView: UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.backgroundColor = .cyan
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+}()
+```
+
+	b. Create a new button to present the SwiftUI view with inputted data from the text field, then add this UI component inside the stack view as well.
+	
+	```swift
+private lazy var buttonToPresentSwiftUIViewWithData: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = .yellow
+        button.setTitle("Present SwiftUI View and \nsend data from SwiftUI view to UIKit view", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.layer.cornerRadius = 5.0
+        button.titleLabel?.lineBreakMode = .byWordWrapping
+        button.titleLabel?.textAlignment = .center
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(presentSwiftUIViewWithData), for: .touchUpInside)
+        return button
+    }()
+```
+	c. Create a property called `cancellable` from the library **Combine** within `ViewController`. With this property, we use it to cancel the data stream of the SwiftUI view.
+	
+	```swift
+	import Combine
+	
+	class ViewController: UIViewController {
+	//...
+	private var cancellable: AnyCancellable?
+	//...
+	}
+	```
+	
+	d. Set up the `presentSwiftUIViewWithData` method to perform 2 tasks. Firstly, this method will present the `BridgingDataSwiftUIView` on the UIKit view via using `UIHostingController` connecting with the data layer from `ContentViewData`. Secondly, it receives inputted data from the SwiftUI view and binds those data to UILabel `inputReceivedFromSwifUIView` on the UIKit view.
+	
+	```swift
+	@objc private func presentSwiftUIViewWithData() {
+        let contentViewWithData = ContentViewData()
+        let swiftUIViewWithData = BridgingDataSwiftUIView(data: contentViewWithData)
+        let hostingController: UIHostingController<BridgingDataSwiftUIView>
+        
+        hostingController = UIHostingController(rootView: swiftUIViewWithData)
+        
+        hostingController.modalTransitionStyle = .flipHorizontal
+        hostingController.modalPresentationStyle = .popover
+        
+        // Binding data from the SwiftUI view to the UILabel on the UIKit view
+        // and stop the data stream if the user stops inputting text into the text field.
+        self.cancellable = contentViewWithData.$name.sink { name in
+            self.inputReceivedFromSwifUIView.text = name
+        }
+        
+        self.present(hostingController, animated: true)
+    }
+    ```
+
+	
+
+
+
+
+
+
+ 
 
