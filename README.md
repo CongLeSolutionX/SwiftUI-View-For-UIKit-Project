@@ -205,7 +205,7 @@ private lazy var buttonToPresentSwiftUIViewWithData: UIButton = {
 	}
 	```
 	
-	d. Set up the `presentSwiftUIViewWithData` method to perform 2 tasks. Firstly, this method will present the `BridgingDataSwiftUIView` on the UIKit view via using `UIHostingController` connecting with the data layer from `ContentViewData`. Secondly, it receives inputted data from the SwiftUI view and binds those data to UILabel `inputReceivedFromSwifUIView` on the UIKit view.
+	d. Set up the `presentSwiftUIViewWithData` method to perform 2 tasks. Firstly, this method will present the `AutomaticBridgingDataSwiftUIView` on the UIKit view via using `UIHostingController` connecting with the data layer from `ContentViewData`. Secondly, it receives inputted data from the SwiftUI view and binds those data to UILabel `inputReceivedFromSwifUIView` on the UIKit view.
 	
 	```swift
 	@objc private func presentSwiftUIViewWithData() {
