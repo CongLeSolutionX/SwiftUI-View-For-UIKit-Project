@@ -7,11 +7,12 @@
 
 import SwiftUI
 
+// Passing an ObservableObject to automatically update SwiftUI view
 class ContentViewData: ObservableObject {
     @Published var name: String = ""
 }
 
-struct BridgingDataSwiftUIView: View {
+struct AutomaticBridgingDataSwiftUIView: View {
     @ObservedObject var data: ContentViewData
 
     var body: some View {
@@ -21,9 +22,9 @@ struct BridgingDataSwiftUIView: View {
     }
 }
 
-struct BridgingDataSwiftUIView_Previews: PreviewProvider {
+struct AutomaticBridgingDataSwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        BridgingDataSwiftUIView(data: ContentViewData())
+        AutomaticBridgingDataSwiftUIView(data: ContentViewData())
     }
 }
 

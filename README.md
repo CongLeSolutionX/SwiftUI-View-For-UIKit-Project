@@ -133,8 +133,8 @@ Data in SwiftUI views
 | @StateObject      				  |                 | @EnvironmentObject                              |
 
 
-To update the views hosted inside UIHostingController, we have the following methods: 
-a. Manually passing an argument in the UIHostingController
+To update the views hosted inside `UIHostingController` in this demo project, we will use following methods: 
+a. Manually passing an argument in the `UIHostingController`
 b. Using `ObservableObject` to pass data from SwiftUI to UIKit view
 
 - Create a data class called `ContentViewData` and conform to `ObservableObject`, then create a variable called `name` and mark it as a `@Published` Property Wrapper.
@@ -145,12 +145,12 @@ class ContentViewData: ObservableObject {
 }
 ```
 
-- Create a new SwiftUI view, then create a property called `data` and mark it as `@ObservedObject` Property Wrapper. We will bind the `data` and `name` as in `self.$data.name`. At this point, whenever the user types in some text in `TextField()`, the text field will reflect the changes
+- Create a new SwiftUI view `AutomaticBridgingDataSwiftUIView`, then create a property called `data` and mark it as `@ObservedObject` Property Wrapper. We will bind the `data` and `name` as in `self.$data.name`. At this point, whenever the user types in some text in `TextField()`, the text field will reflect the changes
 
 ```swift
-struct BridgingDataSwiftUIView: View {
-	@ObservedObject var data: ContentViewData
-    
+struct AutomaticBridgingDataSwiftUIView: View {
+    @ObservedObject var data: ContentViewData
+
     var body: some View {
         VStack {
             TextField("Enter name", text: self.$data.name)
@@ -158,9 +158,9 @@ struct BridgingDataSwiftUIView: View {
     }
 }
 
-struct BridgingDataSwiftUIView_Previews: PreviewProvider {
+struct AutomaticBridgingDataSwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        BridgingDataSwiftUIView(data: ContentViewData())
+        AutomaticBridgingDataSwiftUIView(data: ContentViewData())
     }
 }
 ```
@@ -210,8 +210,8 @@ private lazy var buttonToPresentSwiftUIViewWithData: UIButton = {
 	```swift
 	@objc private func presentSwiftUIViewWithData() {
         let contentViewWithData = ContentViewData()
-        let swiftUIViewWithData = BridgingDataSwiftUIView(data: contentViewWithData)
-        let hostingController: UIHostingController<BridgingDataSwiftUIView>
+        let swiftUIViewWithData = AutomaticBridgingDataSwiftUIView(data: contentViewWithData)
+        let hostingController: UIHostingController<AutomaticBridgingDataSwiftUIView>
         
         hostingController = UIHostingController(rootView: swiftUIViewWithData)
         

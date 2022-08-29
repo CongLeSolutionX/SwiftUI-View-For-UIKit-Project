@@ -138,8 +138,8 @@ extension ViewController {
     
     @objc private func presentSwiftUIViewWithData() {
         let contentViewWithData = ContentViewData()
-        let swiftUIViewWithData = BridgingDataSwiftUIView(data: contentViewWithData)
-        let hostingController: UIHostingController<BridgingDataSwiftUIView>
+        let swiftUIViewWithData = AutomaticBridgingDataSwiftUIView(data: contentViewWithData)
+        let hostingController: UIHostingController<AutomaticBridgingDataSwiftUIView>
         
         hostingController = UIHostingController(rootView: swiftUIViewWithData)
         
