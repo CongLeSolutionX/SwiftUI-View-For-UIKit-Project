@@ -125,7 +125,7 @@ if #available(iOS 13.0, *) {
 
 ## Bridging Data from App to SwiftUI
 
-Data in SwiftUI views 
+### Data in SwiftUI views 
 
 | Data owned <br/> by SwiftUI view | External data   |  External reference <br/> with change traking   |
 | -------------------------------- | --------------  | ----------------------------------------------- |
@@ -133,11 +133,72 @@ Data in SwiftUI views
 | @StateObject      				  |                 | @EnvironmentObject                              |
 
 
-To update the views hosted inside `UIHostingController` in this demo project, we will use following methods: 
-a. Manually passing an argument in the `UIHostingController`
-b. Using `ObservableObject` to pass data from SwiftUI to UIKit view
+To update the views hosted inside `UIHostingController` in this demo project, we will use the following methods: 
+### a. Manually passing an argument in the `UIHostingController`
+- Create a new SwiftUI view called `ManualBridgingDataSwiftUIView`
+
+```swift
+struct ManualBridgingDataSwiftUIView: View {
+    var beatPerMinutes: Int
+    
+    var body: some View {
+        Text("\(beatPerMinutes) BPM")
+    }
+}
+
+struct ManualBridgingDataSwiftUIView_Previews: PreviewProvider {
+    static var previews: some View {
+        ManualBridgingDataSwiftUIView(beatPerMinutes: 80)
+    }
+}
+```
+
+- Back to the main UIKit view controller, create a new button to present the SwiftUI view with data that will be passed manually, then add this new button inside the stack view as well.
+
+```swift
+private lazy var buttonToPresentSwiftUIViewWithManuallyPassedData: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = .yellow
+        button.setTitle("Present SwiftUI View and \nsend data manually from SwiftUI view to UIKit view", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.layer.cornerRadius = 5.0
+        button.titleLabel?.lineBreakMode = .byWordWrapping
+        button.titleLabel?.textAlignment = .center
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(passDataManually), for: .touchUpInside)
+        return button
+    }()
+```
+
+- Create method `passDataManually()` with a variable called `beatsPerMinute`. Also, we will use the property observer `didSet` to change the value of the variable `beatsPerMinute` right after the new value is set, then pass this argument from the UIKit view to the SwiftUI view. Using `print` statements to check the value of `beatsPerMinute` before and after changing its value.
+
+```swift
+@objc private func passDataManually() {
+        let hostingController: UIHostingController<ManualBridgingDataSwiftUIView>
+        var beatsPerMinute: Int = 0 {
+            didSet { update() }
+        }
+        
+        func update() {
+            hostingController.rootView = ManualBridgingDataSwiftUIView(beatPerMinutes: beatsPerMinute)
+            
+        }
+        
+        hostingController = UIHostingController(rootView: ManualBridgingDataSwiftUIView(beatPerMinutes: 0))
+        print(beatsPerMinute)
+        beatsPerMinute = 100
+        print(beatsPerMinute)
+        present(hostingController, animated: true)
+    }
+```
+
+- Problem with this method of bridging data between SwiftUI and UIKit view is that data have to be manually managed, which is not efficient. Thus, we need a better method as below.
+
+
+### b.Using `ObservableObject` to pass data from SwiftUI to UIKit view
 
 - Create a data class called `ContentViewData` and conform to `ObservableObject`, then create a variable called `name` and mark it as a `@Published` Property Wrapper.
+
 
 ```swift
 class ContentViewData: ObservableObject {
@@ -164,7 +225,7 @@ struct AutomaticBridgingDataSwiftUIView_Previews: PreviewProvider {
     }
 }
 ```
-- Back to the UIKit view, we will set up to receive data streams from the SwiftUI view:
+- Back to the main UIKit view controller, we will set up to receive data streams from the SwiftUI view:
 	a. Create a UILabel on the UIKit view and add it to the stack view.
 	
 	```swift
@@ -227,13 +288,3 @@ private lazy var buttonToPresentSwiftUIViewWithData: UIButton = {
         self.present(hostingController, animated: true)
     }
     ```
-
-	
-
-
-
-
-
-
- 
-

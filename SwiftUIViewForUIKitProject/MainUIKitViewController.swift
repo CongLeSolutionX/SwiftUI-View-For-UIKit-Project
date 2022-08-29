@@ -10,7 +10,7 @@ import UIKit
 import SwiftUI /// contains instance `UIHostingController`
 import Combine /// contains `AnyCancellable`
 
-class ViewController: UIViewController {
+class MainUIKitViewController: UIViewController {
     private var cancellable: AnyCancellable?
     
     private lazy var stackView: UIStackView = {
@@ -19,11 +19,12 @@ class ViewController: UIViewController {
             buttonToAddSwiftUIViewToUIKitView,
             buttonToAddSwiftUIViewToUIKitViewThroughExtension,
             buttonToPresentSwiftUIViewWithData,
-            inputReceivedFromSwifUIView
+            inputReceivedFromSwifUIView,
+            buttonToPresentSwiftUIViewWithManuallyPassedData
         ])
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
-        stackView.spacing = 20
+        stackView.spacing = 10
         stackView.alignment = .center
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -65,7 +66,7 @@ class ViewController: UIViewController {
     private lazy var buttonToPresentSwiftUIViewWithData: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = .yellow
-        button.setTitle("Present SwiftUI View and \nsend data from SwiftUI view to UIKit view", for: .normal)
+        button.setTitle("Present SwiftUI View and \nsend data automatically from SwiftUI view to UIKit view", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.layer.cornerRadius = 5.0
         button.titleLabel?.lineBreakMode = .byWordWrapping
@@ -80,6 +81,19 @@ class ViewController: UIViewController {
         label.backgroundColor = .cyan
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    private lazy var buttonToPresentSwiftUIViewWithManuallyPassedData: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = .yellow
+        button.setTitle("Present SwiftUI View and \nsend data manually from SwiftUI view to UIKit view", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.layer.cornerRadius = 5.0
+        button.titleLabel?.lineBreakMode = .byWordWrapping
+        button.titleLabel?.textAlignment = .center
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(passDataManually), for: .touchUpInside)
+        return button
     }()
     
     override func viewDidLoad() {
@@ -104,7 +118,7 @@ class ViewController: UIViewController {
 }
 
 // MARK: - Different methods to display SwiftUI view into UIKit view controller
-extension ViewController {
+extension MainUIKitViewController {
     
     /// Preseting a SwiftUI view in UIKit View Controller
     @objc private func presentSwiftUIView() {
@@ -151,6 +165,24 @@ extension ViewController {
         }
         
         self.present(hostingController, animated: true)
+    }
+    
+    @objc private func passDataManually() {
+        let hostingController: UIHostingController<ManualBridgingDataSwiftUIView>
+        var beatsPerMinute: Int = 0 {
+            didSet { update() }
+        }
+        
+        func update() {
+            hostingController.rootView = ManualBridgingDataSwiftUIView(beatPerMinutes: beatsPerMinute)
+            
+        }
+        
+        hostingController = UIHostingController(rootView: ManualBridgingDataSwiftUIView(beatPerMinutes: 0))
+        print(beatsPerMinute)
+        beatsPerMinute = 100
+        print(beatsPerMinute)
+        present(hostingController, animated: true)
     }
 }
 

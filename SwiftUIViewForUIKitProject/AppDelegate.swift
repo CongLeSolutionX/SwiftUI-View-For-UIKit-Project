@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window?.backgroundColor = .systemRed
     
     // Setup the view controllers
-    let mainVC = ViewController()
+    let mainVC = MainUIKitViewController()
     navigationController = UINavigationController(rootViewController: mainVC)
     window?.rootViewController = navigationController
     
