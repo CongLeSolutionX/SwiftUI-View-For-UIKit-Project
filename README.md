@@ -1,10 +1,10 @@
 # Use SwiftUI With UIKit - WWDC22
-In this demo project we will: 
+In this demo project we will:
 - Demonstrate 3 methods to present a SwiftUI View on an existing UIKit project using UIViewControllers.
-- How to bridge data between the legacy app and SwiftUI back and forth. 
+- How to bridge data between the legacy app and SwiftUI back and forth.
 - How to embed SwiftUI into UICollectionView and UITableView with UIHostingConfiguration.
 
-References: 
+References:
 - WWDC 2022 video: https://developer.apple.com/videos/play/wwdc2022/10072
 - An article on www.avanderlee.com: https://www.avanderlee.com/swiftui/integrating-swiftui-with-uikit
 
@@ -15,13 +15,13 @@ References:
 
 # Table of contents
 * UIHostingController
-* Bridging data 
-* SwiftUI in cells 
+* Bridging data
+* SwiftUI in cells
 * Data flow for cells
 
 ## UIHostingController
 
-- UIHostingController is a UIViewController that contains a SwiftUI view hierarchy. 
+- UIHostingController is a UIViewController that contains a SwiftUI view hierarchy.
 - We can use a hosting controller anywhere we can use a view controller in UIKit.
 - Structure of UIHostingController: UIHostingController is a view controller, which means it has a UIView stored in its view property, and inside that view is where the SwiftUI content is rendered.
 
@@ -65,10 +65,10 @@ b. Present a hosting view controller as an embedded view onto the UIKit view
         let hostingController = UIHostingController(rootView: swiftUIView)
         /// Add the hosting controller as a child view controller for the current view controller
         self.addChild(hostingController)
-        
+
         /// add the SwiftUI view to the view controller view hierarchy
         self.view.addSubview(hostingController.view)
-        
+
         /// Setup the constraints to update the SwiftUI view boundaries
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -77,7 +77,7 @@ b. Present a hosting view controller as an embedded view onto the UIKit view
             view.bottomAnchor.constraint(equalTo: hostingController.view.bottomAnchor),
             view.rightAnchor.constraint(equalTo: hostingController.view.rightAnchor)
         ])
-        
+
         /// Notify the hosting controller that it has been moved to the current view controller
         hostingController.didMove(toParent: self)
     }
@@ -105,7 +105,7 @@ let hostingController = UIHostingController(rootView: swiftUIView)
 hostingController.modalTransitionStyle = .crossDissolve
 hostingController.modalPresentationStyle = .popover
 
-/// Since `sizingOptions` API only available from iOS 16.0, we need a version check here 
+/// Since `sizingOptions` API only available from iOS 16.0, we need a version check here
 if #available(iOS 16.0, *) {
 	hostingController.sizingOptions = .preferredContentSize
 } else {
@@ -125,7 +125,7 @@ if #available(iOS 13.0, *) {
 
 ## Bridging Data from App to SwiftUI
 
-### Data in SwiftUI views 
+### Data in SwiftUI views
 
 | Data owned <br/> by SwiftUI view | External data   |  External reference <br/> with change traking   |
 | -------------------------------- | --------------  | ----------------------------------------------- |
@@ -133,14 +133,14 @@ if #available(iOS 13.0, *) {
 | @StateObject      				  |                 | @EnvironmentObject                              |
 
 
-To update the views hosted inside `UIHostingController` in this demo project, we will use the following methods: 
+To update the views hosted inside `UIHostingController` in this demo project, we will use the following methods:
 ### a. Manually passing an argument in the `UIHostingController`
 - Create a new SwiftUI view called `ManualBridgingDataSwiftUIView`
 
 ```swift
 struct ManualBridgingDataSwiftUIView: View {
     var beatPerMinutes: Int
-    
+
     var body: some View {
         Text("\(beatPerMinutes) BPM")
     }
@@ -178,12 +178,12 @@ private lazy var buttonToPresentSwiftUIViewWithManuallyPassedData: UIButton = {
         var beatsPerMinute: Int = 0 {
             didSet { update() }
         }
-        
+
         func update() {
             hostingController.rootView = ManualBridgingDataSwiftUIView(beatPerMinutes: beatsPerMinute)
-            
+
         }
-        
+
         hostingController = UIHostingController(rootView: ManualBridgingDataSwiftUIView(beatPerMinutes: 0))
         print(beatsPerMinute)
         beatsPerMinute = 100
@@ -225,10 +225,9 @@ struct AutomaticBridgingDataSwiftUIView_Previews: PreviewProvider {
     }
 }
 ```
-- Back to the main UIKit view controller, we will set up to receive data streams from the SwiftUI view:
-	a. Create a UILabel on the UIKit view and add it to the stack view.
-	
-	```swift
+- Back to the main UIKit view controller, we will set up to receive data streams from the SwiftUI view. Firstly, create a UILabel on the UIKit view and add it to the stack view.
+
+```swift
 private lazy var inputReceivedFromSwifUIView: UILabel = {
         let label = UILabel()
         label.text = ""
@@ -237,10 +236,10 @@ private lazy var inputReceivedFromSwifUIView: UILabel = {
         return label
 }()
 ```
+- Create a new button to present the SwiftUI view with inputted data from the text field, then add this UI component inside the stack view as well.
 
-	b. Create a new button to present the SwiftUI view with inputted data from the text field, then add this UI component inside the stack view as well.
-	
-	```swift
+
+```swift
 private lazy var buttonToPresentSwiftUIViewWithData: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = .yellow
@@ -254,37 +253,39 @@ private lazy var buttonToPresentSwiftUIViewWithData: UIButton = {
         return button
     }()
 ```
-	c. Create a property called `cancellable` from the library **Combine** within `ViewController`. With this property, we use it to cancel the data stream of the SwiftUI view.
-	
-	```swift
+
+- Create a property called `cancellable` from the library **Combine** within `ViewController`. With this property, we use it to cancel the data stream of the SwiftUI view.
+
+```swift
 	import Combine
-	
+
 	class ViewController: UIViewController {
 	//...
 	private var cancellable: AnyCancellable?
 	//...
 	}
-	```
-	
-	d. Set up the `presentSwiftUIViewWithData` method to perform 2 tasks. Firstly, this method will present the `AutomaticBridgingDataSwiftUIView` on the UIKit view via using `UIHostingController` connecting with the data layer from `ContentViewData`. Secondly, it receives inputted data from the SwiftUI view and binds those data to UILabel `inputReceivedFromSwifUIView` on the UIKit view.
-	
-	```swift
+```
+
+- Set up the `presentSwiftUIViewWithData` method to perform 2 tasks. Firstly, this method will present the `AutomaticBridgingDataSwiftUIView` on the UIKit view via using `UIHostingController` connecting with the data layer from `ContentViewData`. Secondly, it receives inputted data from the SwiftUI view and binds those data to UILabel `inputReceivedFromSwifUIView` on the UIKit view.
+
+
+```swift
 	@objc private func presentSwiftUIViewWithData() {
         let contentViewWithData = ContentViewData()
         let swiftUIViewWithData = AutomaticBridgingDataSwiftUIView(data: contentViewWithData)
         let hostingController: UIHostingController<AutomaticBridgingDataSwiftUIView>
-        
+
         hostingController = UIHostingController(rootView: swiftUIViewWithData)
-        
+
         hostingController.modalTransitionStyle = .flipHorizontal
         hostingController.modalPresentationStyle = .popover
-        
+
         // Binding data from the SwiftUI view to the UILabel on the UIKit view
         // and stop the data stream if the user stops inputting text into the text field.
         self.cancellable = contentViewWithData.$name.sink { name in
             self.inputReceivedFromSwifUIView.text = name
         }
-        
+
         self.present(hostingController, animated: true)
     }
-    ```
+```
