@@ -33,7 +33,7 @@ References:
 
 a. Presenting a UIHostingController as a modal view controller:
 
-```swift{.line-numbers}
+```swift
 let swiftUIView = SwiftUIView()
 let hostingController = UIHostingController(rootView: swiftUIView)
 
@@ -56,7 +56,7 @@ b. Present a hosting view controller as an embedded view onto the UIKit view
 
 - Build the following custom function:
 
-```swift{.line-numbers}
+```swift
     /// Fully add SwiftUI `view` onto the UIKit `view`
     /// - Parameters:
     ///   - swiftUIView: The SwiftUI `view` to add as a child.
@@ -84,7 +84,7 @@ b. Present a hosting view controller as an embedded view onto the UIKit view
 ```
 - Use the custom function above to present the hosting controller
 
-```swift{.line-numbers}
+```swift
 let swiftUIVIew = SwiftUIView()
 self.addSubSwiftUIView(swiftUIVIew, to: view)
 ```
@@ -98,7 +98,7 @@ self.addSubSwiftUIView(swiftUIVIew, to: view)
 
 We can enable this automatic update via using the new [**sizingOptions** property](https://developer.apple.com/documentation/swiftui/nshostingcontroller/sizingoptions) on UIHostingController.
 
-```swift{.line-numbers}
+```swift
 let swiftUIView = SwiftUIView()
 let hostingController = UIHostingController(rootView: swiftUIView)
 
@@ -115,7 +115,7 @@ present(hostingController, animated: true, completion: nil)
 ```
 Since SwiftUI is available from iOS 13.0 and if your app still supports older iOS versions, we should have a version check when adding the SwiftUI features into the codebase.
 
-```swift{.line-numbers}
+```swift
 if #available(iOS 13.0, *) {
     presentSwiftUIView()
 } else {
@@ -137,7 +137,7 @@ To update the views hosted inside `UIHostingController` in this demo project, we
 ### a. Manually passing an argument in the `UIHostingController`
 - Create a new SwiftUI view called `ManualBridgingDataSwiftUIView`
 
-```swift{.line-numbers}
+```swift
 struct ManualBridgingDataSwiftUIView: View {
     var beatPerMinutes: Int
 
@@ -155,7 +155,7 @@ struct ManualBridgingDataSwiftUIView_Previews: PreviewProvider {
 
 - Back to the main UIKit view controller, create a new button to present the SwiftUI view with data that will be passed manually, then add this new button inside the stack view as well.
 
-```swift{.line-numbers}
+```swift
 private lazy var buttonToPresentSwiftUIViewWithManuallyPassedData: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = .yellow
@@ -172,7 +172,7 @@ private lazy var buttonToPresentSwiftUIViewWithManuallyPassedData: UIButton = {
 
 - Create method `passDataManually()` with a variable called `beatsPerMinute`. Also, we will use the property observer `didSet` to change the value of the variable `beatsPerMinute` right after the new value is set, then pass this argument from the UIKit view to the SwiftUI view. Using `print` statements to check the value of `beatsPerMinute` before and after changing its value.
 
-```swift{.line-numbers}
+```swift
 @objc private func passDataManually() {
         let hostingController: UIHostingController<ManualBridgingDataSwiftUIView>
         var beatsPerMinute: Int = 0 {
@@ -200,7 +200,7 @@ private lazy var buttonToPresentSwiftUIViewWithManuallyPassedData: UIButton = {
 - Create a data class called `ContentViewData` and conform to `ObservableObject`, then create a variable called `name` and mark it as a `@Published` Property Wrapper.
 
 
-```swift{.line-numbers}
+```swift
 class ContentViewData: ObservableObject {
     @Published var name: String = ""
 }
@@ -208,7 +208,7 @@ class ContentViewData: ObservableObject {
 
 - Create a new SwiftUI view `AutomaticBridgingDataSwiftUIView`, then create a property called `data` and mark it as `@ObservedObject` Property Wrapper. We will bind the `data` and `name` as in `self.$data.name`. At this point, whenever the user types in some text in `TextField()`, the text field will reflect the changes
 
-```swift{.line-numbers}
+```swift
 struct AutomaticBridgingDataSwiftUIView: View {
     @ObservedObject var data: ContentViewData
 
@@ -227,7 +227,7 @@ struct AutomaticBridgingDataSwiftUIView_Previews: PreviewProvider {
 ```
 - Back to the main UIKit view controller, we will set up to receive data streams from the SwiftUI view. Firstly, create a UILabel on the UIKit view and add it to the stack view.
 
-```swift{.line-numbers}
+```swift
 private lazy var inputReceivedFromSwifUIView: UILabel = {
         let label = UILabel()
         label.text = ""
@@ -239,7 +239,7 @@ private lazy var inputReceivedFromSwifUIView: UILabel = {
 - Create a new button to present the SwiftUI view with inputted data from the text field, then add this UI component inside the stack view as well.
 
 
-```swift{.line-numbers}
+```swift
 private lazy var buttonToPresentSwiftUIViewWithData: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = .yellow
@@ -256,7 +256,7 @@ private lazy var buttonToPresentSwiftUIViewWithData: UIButton = {
 
 - Create a property called `cancellable` from the library **Combine** within `ViewController`. With this property, we use it to cancel the data stream of the SwiftUI view.
 
-```swift{.line-numbers}
+```swift
 	import Combine
 
 	class ViewController: UIViewController {
@@ -269,7 +269,7 @@ private lazy var buttonToPresentSwiftUIViewWithData: UIButton = {
 - Set up the `presentSwiftUIViewWithData` method to perform 2 tasks. Firstly, this method will create the `AutomaticBridgingDataSwiftUIView` on the UIKit view via using `UIHostingController` connecting with the data layer from `ContentViewData`. Secondly, it receives inputted data from the SwiftUI view and binds those data to UILabel `inputReceivedFromSwifUIView` on the UIKit view at line 14.
 
 
-```swift{highlight=14, .line-numbers}
+```swift
 	@objc private func presentSwiftUIViewWithData() {
         let contentViewWithData = ContentViewData()
         let swiftUIViewWithData = AutomaticBridgingDataSwiftUIView(data: contentViewWithData)
